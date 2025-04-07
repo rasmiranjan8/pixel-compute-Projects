@@ -1,0 +1,48 @@
+.container{
+  height: 80vh;
+  width: 70vw;
+  margin: auto;
+  background-image: url("https://img.freepik.com/free-vector/yellow-diagonal-geometric-striped-background-with-halftone-detailed_1409-1451.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 10px;
+  
+  text-align: center;
+}
+.navbar{
+  padding-top: 50px;
+  padding-bottom: 50px;
+
+}
+a{
+  text-decoration: none;
+  color: black;
+  padding: 15px 10px;
+}
+#loginbtn{
+  width: 200px;
+  background-color: black;
+  color: white;
+  padding: 10px;
+  border-right: 5px solid white;
+  border-bottom: 5px solid white;
+}
+.inputbox{
+  padding: 10px;
+  margin: 10px;
+  font: bold;
+
+}
+#radiobtn{
+  padding: 10px 5px;
+  margin: 20px;
+}
+#cancelbtn{
+  width: 200px;
+  background-color: white;
+  color: black;
+  padding: 10px;
+  margin: 20px;
+  border-right: 5px solid black;
+  border-bottom: 5px solid black;
+}
