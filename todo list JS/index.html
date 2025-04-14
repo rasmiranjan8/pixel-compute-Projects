@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>To-Do List</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>To-Do List</h1>
+      <input type="text" placeholder="Search tasks..." class="search-input" />
+    </header>
+
+    <div class="task-input">
+      <input type="text" placeholder="Add your to-do task..." />
+      <input type="date" />
+      <input type="time" />
+      <button class="add-btn">Add Task</button>
+    </div>
+
+    <section class="tasks-section">
+      <h2>Due Tasks</h2>
+
+      <div class="task-group">
+        <h3>16/10/2024</h3>
+        <div class="task">
+          <span>Buy Groceries at <strong>05:00 pm</strong></span>
+          <div class="task-actions">
+            <button class="edit-btn">Edit</button>
+            <button class="delete-btn">Delete</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-group">
+        <h3>17/10/2024</h3>
+        <div class="task">
+          <span>Buy Milk at <strong>05:00 pm</strong></span>
+          <div>
+            <button class="edit-btn">Edit</button>
+            <button class="delete-btn">Delete</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-group">
+        <h3>18/10/2024</h3>
+        <div class="task">
+          <span>Learn to Code JavaScript at <strong>08:00 am</strong></span>
+          <div>
+            <button class="edit-btn">Edit</button>
+            <button class="delete-btn">Delete</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

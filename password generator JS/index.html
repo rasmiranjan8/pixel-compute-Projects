@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Password Generator</h1>
+      <div class="password-display">
+        <input type="text" value="QF()y<5Q:" readonly>
+        <button class="copy-btn">Copy Password</button>
+      </div>
+      <p class="description">Use the slider, and select from the options below to lengthen your password and strengthen your security<br> Password length (6–64)</p>
+
+      <div class="slider-section">
+        <label>Total Characters:</label>
+        <input type="range" min="6" max="64" id="charRange" value="9">
+        <span id="char-count">9</span>
+      </div>
+
+      <div class="options">
+        <label><input type="checkbox" id="numbers" checked> Include Numbers</label>
+        <label><input type="checkbox" id="letters" checked> Include Letters</label>
+        <label><input type="checkbox" id="mixed-case" checked> Include Mixed Case</label>
+        <label><input type="checkbox" id="punctuation" checked> Include Punctuation</label>
+      </div>
+    </div>
+
+    <div class="info">
+      <div>
+        <h2>Do you use any of these weak passwords?</h2>
+        <ul>
+          <li>Password</li>
+          <li>123456</li>
+          <li>Qwerty</li>
+          <li>Your child's name</li>
+          <li>I always use the same password</li>
+        </ul>
+      </div>
+      <div>
+        <h2>Why are those passwords are weak?</h2>
+        <ul>
+          <li>They're easy to guess or crack. Really easy!</li>
+          <li>If one of your logins is compromised, a hacker then has access to all your services.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
