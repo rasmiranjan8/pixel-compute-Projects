@@ -61,3 +61,4 @@ function resetGame() {
 }
 boxes.forEach(box => box.addEventListener('click', handleBoxClick));
 resetButton.addEventListener('click', resetGame);
+generateRandomShips();

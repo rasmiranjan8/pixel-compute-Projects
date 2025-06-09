@@ -1,114 +1,74 @@
-let selectedFrom = "";
-let selectedTo = "";
-
-async function populateCurrencyDropdowns() {
-  const res = await fetch("https://restcountries.com/v3.1/all");
-  const data = await res.json();
-
-  const fromOptions = document.getElementById("fromOptions");
-  const toOptions = document.getElementById("toOptions");
-
-  const added = new Set();
-  const currencyList = [];
-
-  data.forEach((country) => {
-    const currencies = country.currencies;
-    const flag = country.flags?.png;
-
-    if (currencies && flag) {
-      const [currencyCode, currencyData] = Object.entries(currencies)[0];
-      if (!added.has(currencyCode)) {
-        added.add(currencyCode);
-        currencyList.push({
-          code: currencyCode,
-          name: currencyData.name,
-          flag: flag,
-        });
-      }
-    }
-  });
-
-  currencyList.sort((a, b) => a.code.localeCompare(b.code));
-
-  currencyList.forEach(({ code, name, flag }) => {
-    const label = `${code} - ${name}`;
-    const html = `<img src="${flag}" alt="${code}" /> <span>${label}</span>`;
-
-    const liFrom = document.createElement("li");
-    liFrom.innerHTML = html;
-    liFrom.dataset.value = code;
-
-    const liTo = liFrom.cloneNode(true);
-    liTo.dataset.value = code;
-
-    fromOptions.appendChild(liFrom);
-    toOptions.appendChild(liTo);
-  });
-
-  setupDropdown("fromDropdown", (value) => (selectedFrom = value));
-  setupDropdown("toDropdown", (value) => (selectedTo = value));
-}
-
-function setupDropdown(id, callback) {
-  const dropdown = document.getElementById(id);
-  const selected = dropdown.querySelector(".selected");
-  const optionsList = dropdown.querySelector(".options");
-
-  dropdown.querySelectorAll("li").forEach((option) => {
-    option.addEventListener("click", () => {
-      selected.innerHTML = option.innerHTML;
-      dropdown.classList.remove("active");
-      callback(option.dataset.value);
-    });
-  });
-
-  selected.addEventListener("click", (e) => {
-    e.stopPropagation();
-    dropdown.classList.toggle("active");
-  });
-
-  document.addEventListener("click", function (e) {
-    if (!dropdown.contains(e.target)) {
-      dropdown.classList.remove("active");
-    }
-  });
-}
-
-async function convertCurrency() {
-  const amount = document.getElementById("amount").value;
-  const resultDiv = document.getElementById("result");
-  const errorDiv = document.getElementById("error");
-
-  resultDiv.style.display = "none";
-  errorDiv.style.display = "none";
-
-  if (!amount || !selectedFrom || !selectedTo) {
-    errorDiv.textContent = "Please fill all fields correctly.";
-    errorDiv.style.display = "block";
-    return;
-  }
-
-  const apiKey = "494a6b051ac4dbbb5f5eace9";
-  const url = `https://v6.exchangerate-api.com/v6/${apiKey}/pair/${selectedFrom}/${selectedTo}/${amount}`;
-
+let countryList = [];
+async function fetchCountries() {
   try {
-    const res = await fetch(url);
-    const data = await res.json();
-
-    if (data.result === "success") {
-      resultDiv.textContent = `${amount} ${selectedFrom} = ${data.conversion_result} ${selectedTo}`;
-      resultDiv.style.display = "block";
-    } else {
-      errorDiv.textContent = "Conversion failed. Please try again.";
-      errorDiv.style.display = "block";
+    let res = await fetch(
+      "https://restcountries.com/v3.1/all?fields=name,currencies,flag"
+    );
+    if (!res.ok) {
+      throw new Error("Network response was not ok");
     }
-  } catch (err) {
-    errorDiv.textContent = "Invalid Inputs, please try again";
-    errorDiv.style.display = "block";
+    let data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("There has been a problem with your fetch operation:", error);
+    return null;
   }
 }
 
-populateCurrencyDropdowns();
-document
-  .getElementById("convertBtn")
-  .addEventListener("click", convertCurrency);
+// fetchCountries();
+async function options() {
+  const fromSelect = document.getElementById("from");
+  const toSelect = document.getElementById("to");
+  const countryList = await fetchCountries();
+  if (countryList) {
+    countryList.forEach((country) => {
+      let option = document.createElement("option");
+      option.value = Object.keys(country.currencies)[0];
+      option.innerText = `${Object.keys(country.currencies)[0]}-${
+        country.currencies?.[Object.keys(country.currencies)[0]]?.name
+      }`;
+      fromSelect.appendChild(option);
+    });
+    countryList.forEach((country) => {
+      let option = document.createElement("option");
+      option.value = Object.keys(country.currencies)[0];
+      option.innerText = `${Object.keys(country.currencies)[0]}-${
+        country.currencies?.[Object.keys(country.currencies)[0]]?.name
+      }`;
+      toSelect.appendChild(option);
+    });
+  }
+}
+
+options();
+
+const button = document.getElementById("convert");
+button.addEventListener("click", async function () {
+  const fromValue = document.getElementById("from").value;
+  const toValue = document.getElementById("to").value;
+  try {
+    const res = await fetch(
+      `https://v6.exchangerate-api.com/v6/cf413293950d505d846de397/latest/${fromValue}`
+    );
+    if (!res.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data = await res.json();
+    let convRate = data["conversion_rates"][toValue];
+    let amount = document.getElementById("amount").value;
+    let convertedAmount = amount * convRate;
+    if (isNaN(convertedAmount)) {
+      throw new Error("Invalid amount entered");
+    }
+    let result = document.getElementById("result");
+    result.innerText = `${amount} ${fromValue} = ${convertedAmount.toFixed(
+      2
+    )} ${toValue}`;
+  } catch (error) {
+    console.error("There has been a problem with your fetch operation:", error);
+    let result = document.getElementById("result");
+    result.innerText = "Error: " + error.message;
+    result.style.color = "red";
+    return null;
+  }
+});

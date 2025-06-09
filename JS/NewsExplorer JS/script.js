@@ -474,4 +474,3 @@ const init = () => {
 
 init();
 searchbar.addEventListener("input", handleSearch);
-
