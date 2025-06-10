@@ -1,81 +1,62 @@
 const display = document.getElementById("display");
 const buttons = document.querySelectorAll(".buttons button");
 
-let currentInput = "";
-let operator = null;
-let previousValue = null;
+let expression = "";
 
 buttons.forEach((button) => {
-  button.addEventListener("click", function () {
-    const value = this.textContent;
+  button.addEventListener("click", () => {
+    const value = button.textContent;
 
     if (!isNaN(value) || value === ".") {
-      currentInput += value;
-      display.value = currentInput;
+      expression += value;
+      display.value = expression;
     } else if (["+", "-", "×", "÷", "%"].includes(value)) {
-      if (currentInput === "" && previousValue === null) return;
+      if (expression === "") return;
+      const lastChar = expression[expression.length - 1];
+      if (["+", "-", "*", "/", "%"].includes(lastChar)) return;
 
-      if (previousValue !== null) {
-        calculate();
-      }
-      previousValue = parseFloat(display.value);
-      operator = value;
-      currentInput = "";
+      expression += convertOperator(value);
+      display.value = expression;
     } else if (value === "=") {
-      if (previousValue !== null && operator !== null) {
-        calculate();
-        operator = null;
-        previousValue = null;
+      try {
+        const sanitized = expression.replace(/×/g, "*").replace(/÷/g, "/");
+        const result = eval(sanitized);
+        display.value = result;
+        expression = result.toString();
+      } catch {
+        display.value = "Error";
+        expression = "";
       }
     } else if (value === "C") {
-      currentInput = "";
-      operator = null;
-      previousValue = null;
+      expression = "";
       display.value = "0";
     } else if (value === "Del") {
-      currentInput = currentInput.slice(0, -1);
-      display.value = currentInput === "" ? "0" : currentInput;
+      expression = expression.slice(0, -1);
+      display.value = expression || "0";
     } else if (value === "Exp") {
-      if (currentInput !== "") {
-        currentInput = Math.exp(parseFloat(currentInput)).toString();
-        display.value = currentInput;
+      try {
+        const expVal = Math.exp(parseFloat(expression));
+        expression = expVal.toString();
+        display.value = expression;
+      } catch {
+        display.value = "Error";
+        expression = "";
       }
     }
   });
 });
 
-function calculate() {
-  let result;
-  const currentValue = parseFloat(currentInput);
-
-  if (isNaN(currentValue) || isNaN(previousValue)) return;
-
-  switch (operator) {
+function convertOperator(op) {
+  switch (op) {
     case "+":
-      result = previousValue + currentValue;
-      break;
+      return "+";
     case "-":
-      result = previousValue - currentValue;
-      break;
+      return "-";
     case "×":
-      result = previousValue * currentValue;
-      break;
+      return "*";
     case "÷":
-      if (currentValue === 0) {
-        result = "Error";
-      } else {
-        result = previousValue / currentValue;
-      }
-      break;
+      return "/";
     case "%":
-      result = previousValue % currentValue;
-      break;
-    default:
-      return;
+      return "%";
   }
-
-  display.value = result;
-  currentInput = result.toString();
-  previousValue = null;
-  operator = null;
 }
